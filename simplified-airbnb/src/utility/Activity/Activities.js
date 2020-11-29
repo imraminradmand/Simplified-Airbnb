@@ -6,13 +6,13 @@ class Activities extends Component {
     render() {
         const activities = this.props.activities.map((activity, i)=>{
             return (
-                <div key={i} className='col s3'>
+                <div key={i} className='col s2'>
                     <Activity activity={activity}/>
                 </div>
             )
         })
         return (
-            <div className='activity'>
+            <div className='activities'>
                 {activities}
              </div>
         )
