@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import Spinner from '../../utility/Spinner/Spinner'
 import './Home.css'
 import SearchBox from './SearchBox'
-import City from '../../utility/City/City'
+import Cities from '../../utility/City/Cities'
 import axios from 'axios'
 
 class Home extends Component {
@@ -26,8 +26,9 @@ class Home extends Component {
             )
         }
 
-        const recCity = this.state.cities.map((city, i) => <City city={city} key={i}/>)
-            
+        const recCity = <Cities cities={this.state.cities} />
+
+        console.log(recCity)
 
         return(
             <div className='container-fluid'>

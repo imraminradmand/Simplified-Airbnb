@@ -28,3 +28,7 @@
     border-bottom: 2px solid white;
     background-color: initial;    
 }
+
+.left {
+    margin-left: '1em';
+}
