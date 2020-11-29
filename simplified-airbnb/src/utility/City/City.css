@@ -25,6 +25,10 @@
     padding-right: 24px;    
 }
 
+.city a {
+    color: white;
+}
+
 .city .price{
     bottom: 0px;   
     font-weight: normal;

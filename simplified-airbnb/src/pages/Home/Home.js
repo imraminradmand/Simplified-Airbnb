@@ -75,7 +75,7 @@ class Home extends Component {
                         </div>
 
                         <div className='col s12'>
-                            <Activities activities={this.state.activities} />
+                            <Activities activities={this.state.activities} header='Today in your area'/>
                         </div>
 
                         <div className='col s12'>

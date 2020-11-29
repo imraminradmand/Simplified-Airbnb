@@ -13,6 +13,7 @@ class Activities extends Component {
         })
         return (
             <div className='activities'>
+                <h1 className='main-header-text'>{this.props.header}</h1>
                 {activities}
              </div>
         )
