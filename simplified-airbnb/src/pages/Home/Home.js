@@ -3,12 +3,14 @@ import Spinner from '../../utility/Spinner/Spinner'
 import './Home.css'
 import SearchBox from './SearchBox'
 import Cities from '../../utility/City/Cities'
+import Activities from '../../utility/Activity/Activities'
 import axios from 'axios'
 
 class Home extends Component {
 
     state = {
         cities: [],
+        activities:[],
         europeCities: {},
         asiaCities: {},
         exoticCities: {},
@@ -40,6 +42,12 @@ class Home extends Component {
             })
         })
         
+        const activitiesUrl = `${window.apiHost}/activities/today`
+        const activities = await axios(activitiesUrl)
+
+        this.setState({
+            activities: activities.data
+        })
      
    }
 
@@ -64,6 +72,10 @@ class Home extends Component {
                     <div className='row'>
                         <div className='col s12'>
                             <Cities cities={this.state.cities} header='Recommended Cities for you' />
+                        </div>
+
+                        <div className='col s12'>
+                            <Activities activities={this.state.activities} />
                         </div>
 
                         <div className='col s12'>

@@ -6,8 +6,8 @@ function Cities(props) {
 
     const city= props.cities.map((city, i) => {
         return (
-            <div className='col s3'>
-                <City city={city} key={i}/>
+            <div key={i} className='col s3'>
+                <City city={city} />
             </div>
         )
     }) 
