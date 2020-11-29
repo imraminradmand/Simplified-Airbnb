@@ -1,5 +1,6 @@
 import React from 'react'
 import City from './City'
+import SlickSlider from '../Slider/Slider'
 
 function Cities(props) {
 
@@ -10,7 +11,9 @@ function Cities(props) {
             </div>
         )
     }) 
-    return city
+    return(
+        <SlickSlider elements={city}/>
+    ) 
 }
 
 export default Cities
