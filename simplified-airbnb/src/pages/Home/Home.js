@@ -4,6 +4,7 @@ import './Home.css'
 import SearchBox from './SearchBox'
 import Cities from '../../utility/City/Cities'
 import Activities from '../../utility/Activity/Activities'
+import Venues from '../../utility/Venues/Venues'
 import axios from 'axios'
 
 class Home extends Component {
@@ -14,6 +15,7 @@ class Home extends Component {
         europeCities: {},
         asiaCities: {},
         exoticCities: {},
+        recVenues: {venues:[]},
     }
 
    async componentDidMount () {
@@ -48,6 +50,12 @@ class Home extends Component {
         this.setState({
             activities: activities.data
         })
+
+        const recVenuesUrl = `${window.apiHost}/venues/recommended`;
+        const venues = await axios(recVenuesUrl);
+        this.setState({
+            recVenues: venues.data,
+        })
      
    }
 
@@ -80,6 +88,10 @@ class Home extends Component {
 
                         <div className='col s12'>
                             <Cities cities={this.state.europeCities.cities} header={this.state.europeCities.header} />
+                        </div>
+
+                        <div className='col s12'>
+                            <Venues venues={this.state.recVenues.venues} header={this.state.recVenues.header} />
                         </div>
 
                         <div className='col s12'>
