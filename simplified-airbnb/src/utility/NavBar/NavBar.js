@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import openModal from '../../actions/openModal'
+import Login from '../../components/Login'
+import Signup from '../../components/Signup'
 
 class NavBar extends Component {
     render(){
@@ -24,8 +26,8 @@ class NavBar extends Component {
                                 <li><Link to='/'>$ USD</Link></li>
                                 <li><Link to='/'>Become a host</Link></li>
                                 <li><Link to='/'>Help</Link></li>
-                                <li><Link to='/'>Sign up</Link></li>
-                                <li onClick={() => {this.props.openModal('open', 'login')}}>Login</li>
+                                <li onClick={() => {this.props.openModal('open', <Login />)}}>Login</li>
+                                <li onClick={() => {this.props.openModal('open', <Signup />)}}>Signup</li>
                             </ul>
                         </div>
                     </nav>
