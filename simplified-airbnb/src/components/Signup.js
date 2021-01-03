@@ -23,6 +23,9 @@ const SignupForm = (props) => {
                     </div>
                 </div>
             </div>
+            <div className='col m12'>
+                <button type='submit' className='btn red accent-2'>SignUp</button>
+            </div>
 
        </div>
     )
