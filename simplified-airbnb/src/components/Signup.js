@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import openModal from '../actions/openModal'
 import Login from './Login'
 import axios from 'axios'
+import swal from 'sweetalert'
 
 const SignupForm = (props) => {
     return (
@@ -71,8 +72,26 @@ class SignUp extends Component{
             password: this.state.password
         }
         const res = await axios.post(url, data)
-        console.log(res.data)
+        const token = res.data.token
         
+        if(res.data.msg === 'userExists') {
+            swal({
+                title: "Email Exists",
+                text: "The provided email already exists",
+                icon: "error",
+              })
+        } else if(res.data.msg === 'invalidData') {
+            swal({
+                title: "Email Invalid email or password",
+                text: "Enter valid email or password",
+                icon: "error",
+              })
+        } else {
+            swal({
+                title: "Success!",
+                icon: "success",
+              })
+        }
     }
 
     render(){
