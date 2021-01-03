@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import openModal from '../actions/openModal'
 import Login from './Login'
-
+import axios from 'axios'
 
 const SignupForm = (props) => {
     return (
@@ -63,9 +63,16 @@ class SignUp extends Component{
         })
     }
 
-    submitSignup = (e) => {
+    submitSignup = async(e) => {
         e.preventDefault()
-        console.log(this.state.email, this.state.password)
+        const url = `${window.apiHost}/users/signup`
+        const data = {
+            email: this.state.email,
+            password: this.state.password
+        }
+        const res = await axios.post(url, data)
+        console.log(res.data)
+        
     }
 
     render(){
