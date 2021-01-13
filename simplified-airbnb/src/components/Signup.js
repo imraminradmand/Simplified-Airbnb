@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import regAction from '../actions/regAction'
 import openModal from '../actions/openModal'
 import Login from './Login'
 import axios from 'axios'
@@ -91,10 +92,13 @@ class SignUp extends Component{
                 title: "Success!",
                 icon: "success",
               })
+
+              this.props.regAction(res.data) //updates auth reducer
         }
     }
 
     render(){
+        console.log(this.props.auth)
         return(
             <div className="login-form">
                 <form onSubmit={this.submitSignup}>
@@ -117,9 +121,16 @@ class SignUp extends Component{
 }
     function mapDispatchToProps(dispatcher) {
         return bindActionCreators ({
-            openModal: openModal
+            openModal: openModal,
+            regAction: regAction,
         }, dispatcher)
     }
     
-    export default connect(null, mapDispatchToProps) (SignUp)
+    function mapStateToProps(state) {
+        return {
+            auth: state.auth,
+        }
+            
+    }
+    export default connect(mapStateToProps, mapDispatchToProps) (SignUp)
     
