@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
 import Point from './Point'
 import './SingleFullVenue.css'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import logoutAction from '../../actions/logoutAction'
+import openModal from '../../actions/openModal'
+import Login from '../../components/Login'
 import axios from 'axios'
 
 class SingleFullVenue extends Component {
@@ -9,6 +14,12 @@ class SingleFullVenue extends Component {
         singleVenue: {},
         points: []
     }
+
+    componentDidUpdate(oldProps) {
+        if(oldProps.auth.token !== this.props.auth.token) {
+            this.props.openModal('closed', '')
+        }
+    } //  close modal after user has signed up and you have a token
 
     async componentDidMount() {
         const vId = this.props.match.params.vid
@@ -91,9 +102,21 @@ class SingleFullVenue extends Component {
                             </select>
                         </div>
                         <div className='col s12 center'>
-                            <button onClick={this.reserveNow} className='btn red accent-2'>
-                                Reserve
-                            </button>
+                            {this.props.auth.email
+                                    ?
+                                    <>
+                                        <button onClick={this.reserveNow} className='btn red accent-2'>
+                                            Reserve
+                                        </button>
+                                    </>
+                                    :
+                                    <>
+                                    <button onClick={() => {this.props.openModal('open', <Login />)}} className='btn red accent-2'>
+                                        Login
+                                    </button>
+                                    </>
+                            }
+                            
                         </div>
                     </div>
                   
@@ -103,5 +126,16 @@ class SingleFullVenue extends Component {
         )
     }
 }
+function mapStateToProps(state) {
+    return {
+        auth: state.auth
+    }
+}
 
-export default SingleFullVenue
+function mapDispatchToProps(dispatcher) {
+    return bindActionCreators ({
+        logoutAction: logoutAction,
+        openModal: openModal
+    }, dispatcher)
+}
+export default connect(mapStateToProps, mapDispatchToProps)(SingleFullVenue)
