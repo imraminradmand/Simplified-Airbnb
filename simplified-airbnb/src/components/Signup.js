@@ -74,6 +74,7 @@ class SignUp extends Component{
         }
         const res = await axios.post(url, data)
         const token = res.data.token
+        console.log(res.data)
         
         if(res.data.msg === 'userExists') {
             swal({
@@ -134,3 +135,6 @@ class SignUp extends Component{
     }
     export default connect(mapStateToProps, mapDispatchToProps) (SignUp)
     
+    //using redux for this instead of cookies so everything can update itself
+    //lets say their langauage needs to change after login or their currency needs to change
+    //instead of cookies redux will ignite a chain reaction and eveything will update automatically
