@@ -8,6 +8,12 @@ import Login from '../../components/Login'
 import Signup from '../../components/Signup'
 
 class NavBar extends Component {
+
+    componentDidUpdate(oldProps) {
+        if(oldProps.auth.token !== this.props.auth.token) {
+            this.props.openModal('closed', '')
+        }
+    } //  close modal after user has signed up and you have a token
     render(){
 
        let navColour ='transparent'
@@ -26,8 +32,18 @@ class NavBar extends Component {
                                 <li><Link to='/'>$ USD</Link></li>
                                 <li><Link to='/'>Become a host</Link></li>
                                 <li><Link to='/'>Help</Link></li>
-                                <li className ='login-signup' onClick={() => {this.props.openModal('open', <Login />)}}>Login</li>
-                                <li className = 'login-signup' onClick={() => {this.props.openModal('open', <Signup />)}}>Signup</li>
+                                {this.props.auth.email
+                                    ?
+                                    <>
+                                        <li>Hi there, {this.props.email}</li>
+                                        <li>Logout</li>
+                                    </>
+                                    :
+                                    <>
+                                        <li className ='login-signup' onClick={() => {this.props.openModal('open', <Login />)}}>Login</li>
+                                        <li className = 'login-signup' onClick={() => {this.props.openModal('open', <Signup />)}}>Signup</li>
+                                    </>
+                                }
                             </ul>
                         </div>
                     </nav>
@@ -37,9 +53,16 @@ class NavBar extends Component {
     }
 }
 
+//just so nav bar knows whats happening so it can adjust
+function mapStateToProps(state) {
+    return {
+        auth: state.auth
+    }
+}
+
 function mapDispatchToProps(dispatcher) {
     return bindActionCreators ({
         openModal: openModal
     }, dispatcher)
 }
-export default connect(null, mapDispatchToProps) (NavBar)
+export default connect(mapStateToProps, mapDispatchToProps) (NavBar)

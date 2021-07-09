@@ -5,3 +5,5 @@ export default (state = {}, action)=> {
         return state
     }
 }
+
+//will listen for register action, if it gets it then it'll pass action.payload on to the store
