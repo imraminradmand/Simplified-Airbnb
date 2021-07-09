@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import Point from './Point'
 import './SingleFullVenue.css'
-import { connect } from 'react-redux'
+import { connect, useDispatch, useSelector } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import logoutAction from '../../actions/logoutAction'
 import openModal from '../../actions/openModal'
@@ -11,46 +11,47 @@ import axios from 'axios'
 import swal from 'sweetalert'
 import loadScript from '../../UtilityFunctions/loadScript'
 
-class SingleFullVenue extends Component {
+function SingleFullVenue(props) {
 
-    state = { 
-        singleVenue: {},
-        points: []
-    }
+    const dispatch = useDispatch()
+    const token = useSelector(state => state.auth.token)
 
-    componentDidUpdate(oldProps) {
-        if(oldProps.auth.token !== this.props.auth.token) {
-            this.props.openModal('closed', '')
-        }
-    } //  close modal after user has signed up and you have a token
+    const [ singleVenue, setSingleVenue ] = useState({})
+    const [ points, setPoints ] = useState([])
+    const [ checkIn, setCheckIn ] = useState("")
+    const [ checkOut, setCheckOut ] = useState("")
+    const [ numGuests, setNumGuests ] = useState("")
 
-    async componentDidMount() {
-        const vId = this.props.match.params.vid
+    useEffect(() => {
+        const vId = props.match.params.vid
         const url = `${window.apiHost}/venue/${vId}`
-        const axiosRes = await axios.get(url)
-        const singleVenue = axiosRes.data
 
-        const pointsUrl = `${window.apiHost}/points/get`
-        const pAxiosRes = await axios.get(pointsUrl)
+        const getData = async() => {
+            const axiosRes = await axios.get(url)
+            const singleVenue = axiosRes.data
+
+            const pointsUrl = `${window.apiHost}/points/get`
+            const pAxiosRes = await axios.get(pointsUrl)
 
 
 
-        const points = singleVenue.points
-            .split(',').map((point, i)=> {
-                return(
-                    <span key={i}>
-                        <Point pointDesc={pAxiosRes.data} point={point}/>
-                    </span>
-                )
-            })
-        this.setState({singleVenue, points})
-    }
+            const points = singleVenue.points
+                .split(',').map((point, i)=> {
+                    return(
+                        <span key={i}>
+                            <Point pointDesc={pAxiosRes.data} point={point}/>
+                        </span>
+                    )
+                })
+                setSingleVenue(singleVenue)
+                setPoints(points)
+            }
+            getData()
+    })
 
-    changeNumGuests = (e) =>{this.setState({numberOfGuests: e.target.value})}
-    changeCheckIn = (e) =>{this.setState({checkIn: e.target.value})}
-    changeCheckOut = (e) =>{this.setState({checkOut: e.target.value})}
 
-    reserveNow = async(e) => {
+
+    const reserveNow = async(e) => {
         const startDay = moment(this.state.checkIn)
         console.log(startDay)
         const endDay = moment(this.state.checkOut)
@@ -121,95 +122,83 @@ class SingleFullVenue extends Component {
         }
     }
 
-    render () {
-        const sv = this.state.singleVenue
-        return (
-            <div className='row single-venue'>
-                <div className='col s12 center'>
-                    <img src={sv.imageUrl} alt=''/>
-                </div>
-                <div className='col s8 location-details offset-s2'>
-                    <div className='col s8 left-details'>
-                        <div className='location'>
-                            {sv.location}
-                        </div>
-                        <div className='title'>
-                            {sv.title}
-                        </div>
-                        <div className='guests'>
-                            {sv.guests}
-                        </div>
-                        <div className='divider'></div>
 
-                        {this.state.points}
-
-                        <div className='details'> {sv.details}</div>
-                        <div className='amenities'> {sv.amenities}</div>
-                    </div>
-                    <div className='col s4 right-details'>
-                        <div className='price-per-day'>
-                            ${sv.pricePerNight}
-                            <span>
-                                per day
-                            </span>
-                        </div>
-                        <div className='rating'> {sv.rating} </div>
-
-                        <div className='col s6'>
-                            Check-In
-                            <input onChange={this.changeCheckIn} value={this.state.checkIn} type='date'/>
-                        </div>
-                        <div className='col s6'>
-                            Check-out
-                            <input type='date' onChange={this.changeCheckOut} value={this.state.checkOut}/>
-                        </div>
-
-                        <div className='col s12'>
-                            <select className='browser-default' onChange={this.changeNumGuests} value={this.state.numberOfGuests}>
-                                <option value='1'>1 Guest</option>
-                                <option value='2'>2 Guests</option>
-                                <option value='3'>3 Guests</option>
-                                <option value='4'>4 Guests</option>
-                                <option value='5'>5 Guests</option>
-                                <option value='6'>6 Guests</option>
-                                <option value='7'>7 Guests</option>
-                            </select>
-                        </div>
-                        <div className='col s12 center'>
-                            {this.props.auth.email
-                                    ?
-                                    <>
-                                        <button onClick={this.reserveNow} className='btn red accent-2'>
-                                            Reserve
-                                        </button>
-                                    </>
-                                    :
-                                    <>
-                                    <button onClick={() => {this.props.openModal('open', <Login />)}} className='btn red accent-2'>
-                                        Login
-                                    </button>
-                                    </>
-                            }
-                            
-                        </div>
-                    </div>
-                  
-
-                </div>
+        const sv = singleVenue
+    return (
+        <div className='row single-venue'>
+            <div className='col s12 center'>
+                <img src={sv.imageUrl} alt=''/>
             </div>
-        )
-    }
-}
-function mapStateToProps(state) {
-    return {
-        auth: state.auth
-    }
+            <div className='col s8 location-details offset-s2'>
+                <div className='col s8 left-details'>
+                    <div className='location'>
+                        {sv.location}
+                    </div>
+                    <div className='title'>
+                        {sv.title}
+                    </div>
+                    <div className='guests'>
+                        {sv.guests}
+                    </div>
+                    <div className='divider'></div>
+
+                    {points}
+
+                    <div className='details'> {sv.details}</div>
+                    <div className='amenities'> {sv.amenities}</div>
+                </div>
+                <div className='col s4 right-details'>
+                    <div className='price-per-day'>
+                        ${sv.pricePerNight}
+                        <span>
+                            per day
+                        </span>
+                    </div>
+                    <div className='rating'> {sv.rating} </div>
+
+                    <div className='col s6'>
+                        Check-In
+                        <input onChange={(e)=>setCheckIn(e.target.value)} value={checkIn} type='date'/>
+                    </div>
+                    <div className='col s6'>
+                        Check-out
+                        <input type='date' onChange={(e)=>setCheckOut(e.target.value)} value={checkOut}/>
+                    </div>
+
+                    <div className='col s12'>
+                        <select className='browser-default' onChange={(e)=>setNumGuests(e.target.value)} value={numGuests}>
+                            <option value='1'>1 Guest</option>
+                            <option value='2'>2 Guests</option>
+                            <option value='3'>3 Guests</option>
+                            <option value='4'>4 Guests</option>
+                            <option value='5'>5 Guests</option>
+                            <option value='6'>6 Guests</option>
+                            <option value='7'>7 Guests</option>
+                        </select>
+                    </div>
+                    <div className='col s12 center'>
+                        {token
+                                ?
+                                <>
+                                    <button onClick={reserveNow} className='btn red accent-2'>
+                                        Reserve
+                                    </button>
+                                </>
+                                :
+                                <>
+                                <button onClick={()=>dispatch(openModal('open',<Login />))} className='btn red accent-2'>
+                                    Login
+                                </button>
+                                </>
+                        }
+                        
+                    </div>
+                </div>
+                
+
+            </div>
+        </div>
+    )
 }
 
-function mapDispatchToProps(dispatcher) {
-    return bindActionCreators ({
-        logoutAction: logoutAction,
-        openModal: openModal
-    }, dispatcher)
-}
-export default connect(mapStateToProps, mapDispatchToProps)(SingleFullVenue)
+export default SingleFullVenue
