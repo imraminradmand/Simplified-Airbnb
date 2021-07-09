@@ -1,6 +1,6 @@
-import React, {Component} from 'react'
+import React, {useState, useEffect} from 'react'
 import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import regAction from '../actions/regAction'
 import openModal from '../actions/openModal'
 import Login from './Login'
@@ -33,44 +33,39 @@ const SignupForm = (props) => {
     )
 }
 
-class SignUp extends Component{
+function SignUp(props) {
 
-    constructor() {
-        super()
-        this.state = {
-        lowerForm: <button type ='button'
-        onClick ={this.showInput}className="sign-up-button">
-            Sign up with email
-        </button>   
-        }
+    const dispatch = useDispatch()
+
+    const [ lowerPart, setLowerPart ] = useState("")
+    const [ email, changeEmail ] = useState("")
+    const [ password, changePassword ] = useState("")
+
+    useEffect(() => {
+        setLowerPart(
+            <button 
+                type="button" 
+                onClick={showInput} 
+                className="sign-up-button"
+            >Sign up with email
+            </button>
+        )
+    }, [])
+
+    const showInput = () => {
+        setLowerPart(
+            <SignupForm
+                changeEmail={(e)=>changeEmail(e.target.value)} 
+                changePassword={(e)=>changePassword(e.target.value)} />
+        )
     }
 
-    showLogin = () => {
-        this.props.openModal('open', <Login/>)
-    }
-
-    changeEmail = (e) => {
-        this.setState({email:e.target.value})
-    }
-
-    changePassword = (e) => {
-        this.setState({password:e.target.value})
-    }
-
-    showInput = () => {
-        this.setState({
-            lowerForm: <SignupForm 
-                        changeEmail={this.changeEmail} 
-                        changePassword={this.changePassword}/>
-        })
-    }
-
-    submitSignup = async(e) => {
+    const submitSignup = async(e) => {
         e.preventDefault()
         const url = `${window.apiHost}/users/signup`
         const data = {
-            email: this.state.email,
-            password: this.state.password
+            email: email,
+            password: password
         }
         const res = await axios.post(url, data)
         const token = res.data.token
@@ -94,46 +89,32 @@ class SignUp extends Component{
                 icon: "success",
               })
 
-              this.props.regAction(res.data) //updates auth reducer
+              dispatch(regAction(res.data)) //updates auth reducer
         }
     }
 
-    render(){
-        console.log(this.props.auth)
-        return(
-            <div className="login-form">
-                <form onSubmit={this.submitSignup}>
-                    <button className="facebook-login">Connect With Facebook</button>
-                    <button className="google-login">Connect With Google</button>
-                    <div className="login-or center">
-                        <span>or</span>
-                        <div className="or-divider"></div>
-                    </div>
-                    {this.state.lowerForm}
-                    <div className="divider"></div>
-                    <div>Already have an account? 
-                        <span onClick={this.showLogin} className='signup-loginpage'> Login</span>
-                    </div>
-                </form>
-            </div>
 
-        )
-    }
+    return(
+        <div className="login-form">
+            <form onSubmit={submitSignup}>
+                <button className="facebook-login">Connect With Facebook</button>
+                <button className="google-login">Connect With Google</button>
+                <div className="login-or center">
+                    <span>or</span>
+                    <div className="or-divider"></div>
+                </div>
+                {lowerPart}
+                <div className="divider"></div>
+                <div>Already have an account? 
+                    <span onClick={()=>dispatch(openModal('open',<Login />))} className='signup-loginpage'> Login</span>
+                </div>
+            </form>
+        </div>
+
+    )
 }
-    function mapDispatchToProps(dispatcher) {
-        return bindActionCreators ({
-            openModal: openModal,
-            regAction: regAction,
-        }, dispatcher)
-    }
-    
-    function mapStateToProps(state) {
-        return {
-            auth: state.auth,
-        }
-            
-    }
-    export default connect(mapStateToProps, mapDispatchToProps) (SignUp)
+   
+export default SignUp
     
     //using redux for this instead of cookies so everything can update itself
     //lets say their langauage needs to change after login or their currency needs to change
