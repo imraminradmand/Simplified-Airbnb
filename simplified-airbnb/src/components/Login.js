@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import './Login.css';
-import { bindActionCreators } from 'redux'
 import { useDispatch } from 'react-redux'
 import openModal from '../actions/openModal'
 import regAction from '../actions/regAction';
@@ -11,47 +10,44 @@ import swal from 'sweetalert';
 
 function Login(props) {
 
-    const [ email, changeEmail ] = useState('')
-    const [ password, changePassword ] = useState('')
-
     const dispatch = useDispatch()
 
+    const [ email, changeEmail ] = useState("");
+    const [ password, changePassword ] = useState("");
 
-    const submitLogin = async(e) => {
-        e.preventDefault()
-        
-
-        const url = `${window.apiHost}/users/login`
+    const submitLogin = async(e)=>{
+        e.preventDefault();
+        const url = `${window.apiHost}/users/login`;
         const data = {
             email: email,
             password: password
         }
-
-        const res = await Axios.post(url, data)
-        const token = res.data.token
-
-        if(res.data.msg === 'noEmail') {
+        const resp = await Axios.post(url,data);
+        const token = resp.data.token;
+        
+     
+        if(resp.data.msg === "noEmail"){
             swal({
-                title: 'Please provide an email',
-                icon: 'error'
-            })
-        } else if (res.data.msg === 'badPass') {
+                title: "That email is not registered.",
+                icon: "error",
+              })
+     
+        }else if(resp.data.msg === "badPass"){
             swal({
-                title:'Invalid email and/or password',
-                text:'No email found with that password',
-                icon:'error'
-            })
-        } else if (res.data.msg === 'loggedIn') {
+                title: "Invalid email/password",
+                text: "We don't have a match for that user name and password.",
+                icon: "error",
+              })
+       
+        }else if(resp.data.msg === "loggedIn"){
             swal({
-                title:'Success',
-                icon:'success'
-            })
-
-            dispatch(regAction(res.data))
+                title: "Success!",
+                icon: "success",
+              });
+            dispatch(regAction(resp.data))
+            
         }
-
     }
-
 
     return(
         <div className="login-form">
@@ -66,14 +62,11 @@ function Login(props) {
                 <input onChange={(e)=>changePassword(e.target.value)} value={password} type="password" className="browser-default" placeholder="Password" />
                 <button className="sign-up-button">Login</button>
                 <div className="divider"></div>
-                <div>Don't have an account? 
-                    <span onClick={()=>dispatch(openModal('open',<Signup />))} className='signup-loginpage'> Sign up</span>
-                </div>
+                <div>Don't have an account? <span className="pointer" onClick={()=>dispatch(openModal('open',<Signup />))}>Sign up</span></div>
             </form>
         </div>
     )
 }
-
 
 
 export default Login

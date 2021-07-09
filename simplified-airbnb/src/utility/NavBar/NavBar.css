@@ -14,11 +14,9 @@
     cursor: pointer;
 }
 
-.nav ul li.login-signup {
-   margin-right: 15px;
-   margin-left: 15px;
+.nav ul li.login-signup{
+    margin-right: 15px;
 }
-
 
 .nav .nav-non-link{
     padding: 0 15px;
@@ -32,8 +30,4 @@
 .nav ul li:hover{
     border-bottom: 2px solid white;
     background-color: initial;    
-}
-
-.left {
-    margin-left: '1em';
 }
