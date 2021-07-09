@@ -1,7 +1,11 @@
-export default (state = {}, action)=> {
+const initialState = {}
+export default (state = initialState, action)=> {
     if (action.type === 'REGISTER_ACTION') {
         return action.payload
-    } else {
+    } else if(action.type === 'LOGOUT') {
+        return initialState
+        //throwing out the auth so we can logout
+    }else {
         return state
     }
 }
