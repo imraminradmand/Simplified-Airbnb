@@ -19,11 +19,12 @@ const persistConfig = {
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
-const store = applyMiddleware(reduxPromise)(createStore)(rootReducer)
+const store = applyMiddleware(reduxPromise)(createStore)(persistedReducer)
+const presister = persistStore(store)
 
 ReactDOM.render(
   <Provider store={store}>
-    <PersistGate>
+    <PersistGate persistor={presister}>
       <App />
     </PersistGate>
   </Provider>,
