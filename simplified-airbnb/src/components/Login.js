@@ -3,7 +3,10 @@ import './Login.css';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import openModal from '../actions/openModal'
+import regAction from '../actions/regAction';
 import Signup from './Signup'
+import Axios from 'axios';
+import swal from 'sweetalert';
 
 
 class Login extends Component{
@@ -25,9 +28,39 @@ class Login extends Component{
         this.props.openModal('open', <Signup/>)
     }
 
-    submitLogin = (e) => {
+    submitLogin = async(e) => {
         e.preventDefault()
         console.log(this.state.email, this.state.password)
+
+        const url = `${window.apiHost}/users/login`
+        const data = {
+            email: this.state.email,
+            password: this.state.password
+        }
+
+        const res = await Axios.post(url, data)
+        const token = res.data.token
+
+        if(res.data.msg === 'noEmail') {
+            swal({
+                title: 'Please provide an email',
+                icon: 'error'
+            })
+        } else if (res.data.msg === 'badPass') {
+            swal({
+                title:'Invalid email and/or password',
+                text:'No email found with that password',
+                icon:'error'
+            })
+        } else if (res.data.msg === 'loggedIn') {
+            swal({
+                title:'Success',
+                icon:'success'
+            })
+
+            this.props.regAction(res.data)
+        }
+
     }
 
 
@@ -56,7 +89,8 @@ class Login extends Component{
 }
 function mapDispatchToProps(dispatcher) {
     return bindActionCreators ({
-        openModal: openModal
+        openModal: openModal,
+        regAction: regAction
     }, dispatcher)
 }
 
