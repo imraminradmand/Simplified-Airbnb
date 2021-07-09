@@ -10,7 +10,7 @@ function CityVenues(props) {
 
     useEffect(() => {
         const getVenues = async() => {
-            const cityName = this.props.match.params.cityName
+            const cityName = props.match.params.cityName
             const url = `${window.apiHost}/venues/city/${cityName}`
             console.log(url)
             const res = await axios.get(url, {cityName})
@@ -26,7 +26,7 @@ function CityVenues(props) {
 
     return(
         <div className='row'>
-            <Venues venues={this.state.venues} header={this.state.header} />
+            <Venues venues={venues} header={header} />
         </div>
     )
 }
