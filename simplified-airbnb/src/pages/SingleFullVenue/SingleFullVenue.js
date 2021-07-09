@@ -55,24 +55,25 @@ class SingleFullVenue extends Component {
         console.log(startDay)
         const endDay = moment(this.state.checkOut)
         console.log(endDay)
-        const diff = endDay.diff(startDay, 'days')
-        console.log(diff)
+        const diffDays = endDay.diff(startDay, 'days')
+        console.log(diffDays)
 
-        if(diff < 1) {
+        if(diffDays < 1) {
             swal({
                 title:'Invalid date',
                 text:'CheckOut date has to be after CheckIn',
                 icon:'error'
             })
-        } else if (isNaN(diff)) {
+        } else if (isNaN(diffDays)) {
             swal({
                 title:'Bad date',
                 text:'Please make sure your dates are valid',
                 icon:'error'
             })
         } else {
-            const price = this.state.singleVenue.pricePerNight * diff
-            console.log(price) 
+            const pricePerNight = this.state.singleVenue.pricePerNight
+            const totalPrice =  pricePerNight * diffDays
+            console.log(totalPrice) 
             const scriptUrl = 'https://js.stripe.com/v3'
             const stripePublicKey = 'pk_test_5198HtPL5CfCPYJ3X8TTrO06ChWxotTw6Sm2el4WkYdrfN5Rh7vEuVguXyPrTezvm3ntblRX8TpjAHeMQfHkEpTA600waD2fMrT' // should be in env file
 
@@ -95,6 +96,27 @@ class SingleFullVenue extends Component {
             await loadScript(scriptUrl)
             console.log('good to go with Stripe')
             const stripe = window.Stripe(stripePublicKey)
+            const sessionUrl = `${window.apiHost}/payment/create-session`
+            const data = {
+                venueData: this.state.singleVenue,
+                totalPrice,
+                diffDays,
+                pricePerNight,
+                checkIn: this.state.checkIn,
+                checkOut: this.state.checkOut,
+                token: this.props.auth.token,
+                numberOfGuests: this.state.numberOfGuests,
+                currency: 'USD'
+            }
+
+            const sessionVar = await axios.post(sessionUrl,data);
+            // console.log(sessionVar.data);
+            stripe.redirectToCheckout({
+                sessionId: sessionVar.data.id,
+            }).then((result)=>{
+                console.log(result);
+                //if the network fails, this will run
+            })
 
         }
     }
