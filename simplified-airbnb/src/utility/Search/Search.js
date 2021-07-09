@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import './Search.css';
-import '../Home/Home.css';
+import '../../pages/Home/Home.css';
 import Spinner from '../../utility/Spinner/Spinner';
 import axios from 'axios';
-import Cities from '../../utility/City/Cities';
-import Activities from '../../utility/Activity/Activities';
-import Venues from '../../utility/Venue/Venues';
+import Cities from '../City/Cities';
+import Activities from '../Activity/Activities';
+import Venues from '../Venues/Venues';
 
 function Search(props){
 
