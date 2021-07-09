@@ -1,105 +1,82 @@
-import React, {Component} from 'react'
+import React, { history } from 'react'
 import './SearchBox.css'
+import useControlled from '../../UtilityFunctions/useControlled.js/useControlled'
 
-class SearchBox extends Component {
+function SearchBox(props) {
 
-    state = {
-        where: '',
-        checkin: '',
-        checkout: '',
-        guest: 0,
-    }
 
-    changePlace = (e) => {
-        this.setState({
-            where: e.target.value
-        })
-    }
+    const where = useControlled('')
+    const checkin = useControlled('')
+    const checkout = useControlled('')
+    const guest = useControlled('1')    
 
-    changeCheckin = (e) => {
-        this.setState({
-            checkin: e.target.value
-        })
-    }
 
-    changeCheckout = (e) => {
-        this.setState({
-            checkout: e.target.value
-        })
-    }
+    // const submitSearch = ()=> {
+    //     history.push(`/search/${where.value}`)
+    // }
 
-    changeGuest = (e) => {
-        this.setState({
-            guest: e.target.value
-        })
-    }
+    return(
+        <div className='home-search-box col m4'>
+            <h1>Book Unique places to stay and things to do</h1>
 
-    render(){
-        return(
-            <div className='home-search-box col m4'>
-                <h1>Book Unique places to stay and things to do</h1>
+            <form className='search-box-form'>
+                <div className='col m12'>
+                    <div className='form-label'>Where</div>
+                    <div className='input-field' id='where'>
+                        <input 
+                        placeholder='Anywhere' 
+                        {...where}
+                        type='text'>
 
-                <form className='search-box-form'>
-                    <div className='col m12'>
-                        <div className='form-label'>Where</div>
-                        <div className='input-field' id='where'>
-                            <input onChange={this.changePlace} 
-                            placeholder='Anywhere' 
-                            value={this.state.where}
-                            type='text'>
-
-                            </input>
-                        </div>
+                        </input>
                     </div>
+                </div>
 
-                    <div className='col m6'>
-                        <div className='form-label'>Check-in</div>
-                        <div className='input-field' id='checkin'>
-                            <input onChange={this.changeCheckin} 
-                            placeholder='Anywhere' 
-                            value={this.state.checkin}
-                            type='date'>
+                <div className='col m6'>
+                    <div className='form-label'>Check-in</div>
+                    <div className='input-field' id='checkin'>
+                        <input
+                        {...checkin}
+                        type='date'>
 
-                            </input>
-                        </div>
+                        </input>
                     </div>
+                </div>
 
-                    <div className='col m6'>
-                        <div className='form-label'>Check-out</div>
-                        <div className='input-field' id='checkout'>
-                            <input onChange={this.changeCheckout} 
-                            placeholder='Anywhere' 
-                            value={this.state.checkout}
-                            type='date'>
+                <div className='col m6'>
+                    <div className='form-label'>Check-out</div>
+                    <div className='input-field' id='checkout'>
+                        <input  
+                        {...checkout}
+                        type='date'>
 
-                            </input>
-                        </div>
+                        </input>
                     </div>
+                </div>
 
-                    <div className='col m12'>
-                        <div className='form-label'>guest</div>
-                        <div className='input-field' id='guest'>
-                            <input onChange={this.changeGuest} 
-                            placeholder='Guests' 
-                            value={this.state.guest}
-                            type='number'>
+                <div className='col m12'>
+                    <div className='form-label'>guest</div>
+                    <div className='input-field' id='guest'>
+                        <input  
+                        placeholder='Guests' 
+                        {...guest}
+                        type='number'>
 
-                            </input>
-                        </div>
+                        </input>
                     </div>
+                </div>
 
-                    <div className='col m12 submit-btn'>
-                        <div className='input-field' id='submit-btn'>
-                            <input className='btn-large waves-effect waves-light red accent-2' type='submit'>
-                            </input>
-                        </div>
+                <div className='col m12 submit-btn'>
+                    <div className='input-field' id='submit-btn'>
+                        <input className='btn-large waves-effect waves-light red accent-2' type='submit'>
+                        </input>
                     </div>
+                </div>
 
-                </form>
-            </div>
-        )
-    }
-
-
+            </form>
+        </div>
+    )
 }
+
+
 export default SearchBox
