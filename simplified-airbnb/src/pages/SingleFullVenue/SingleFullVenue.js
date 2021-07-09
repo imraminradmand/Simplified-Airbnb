@@ -6,7 +6,10 @@ import { bindActionCreators } from 'redux'
 import logoutAction from '../../actions/logoutAction'
 import openModal from '../../actions/openModal'
 import Login from '../../components/Login'
+import moment from 'moment'
 import axios from 'axios'
+import swal from 'sweetalert'
+import loadScript from '../../UtilityFunctions/loadScript'
 
 class SingleFullVenue extends Component {
 
@@ -43,8 +46,57 @@ class SingleFullVenue extends Component {
         this.setState({singleVenue, points})
     }
 
-    reserveNow =() => {
-        console.log('user wants to reserve now')
+    changeNumGuests = (e) =>{this.setState({numberOfGuests: e.target.value})}
+    changeCheckIn = (e) =>{this.setState({checkIn: e.target.value})}
+    changeCheckOut = (e) =>{this.setState({checkOut: e.target.value})}
+
+    reserveNow = async(e) => {
+        const startDay = moment(this.state.checkIn)
+        console.log(startDay)
+        const endDay = moment(this.state.checkOut)
+        console.log(endDay)
+        const diff = endDay.diff(startDay, 'days')
+        console.log(diff)
+
+        if(diff < 1) {
+            swal({
+                title:'Invalid date',
+                text:'CheckOut date has to be after CheckIn',
+                icon:'error'
+            })
+        } else if (isNaN(diff)) {
+            swal({
+                title:'Bad date',
+                text:'Please make sure your dates are valid',
+                icon:'error'
+            })
+        } else {
+            const price = this.state.singleVenue.pricePerNight * diff
+            console.log(price) 
+            const scriptUrl = 'https://js.stripe.com/v3'
+            const stripePublicKey = 'pk_test_5198HtPL5CfCPYJ3X8TTrO06ChWxotTw6Sm2el4WkYdrfN5Rh7vEuVguXyPrTezvm3ntblRX8TpjAHeMQfHkEpTA600waD2fMrT' // should be in env file
+
+            //PLACING IN OWN MODULE, KEEPING HERE FOR CODE UNDERSTANDABILITY
+            // await new Promise((resolve, reject) =>{
+            //     const script = document.createElement('script')
+            //     script.type = 'text/javascript'
+            //     script.src = scriptUrl
+            //     script.onload = () => {
+            //         console.log('script loaded')
+            //         resolve()
+            //     }
+            //     document.getElementsByTagName('head')[0].appendChild(script)
+            //     //could have used a script tag wanting to try something different
+            //     console.log('Script added')
+            // })
+            //gotta have it be an async await cause if the JS script doesnt run then line
+            //96 wont run cause nothings there, incase internet speeds drop or something
+
+            await loadScript(scriptUrl)
+            console.log('good to go with Stripe')
+            const stripe = window.Stripe(stripePublicKey)
+
+        }
     }
 
     render () {
@@ -83,15 +135,15 @@ class SingleFullVenue extends Component {
 
                         <div className='col s6'>
                             Check-In
-                            <input type='date'></input>
+                            <input onChange={this.changeCheckIn} value={this.state.checkIn} type='date'/>
                         </div>
                         <div className='col s6'>
                             Check-out
-                            <input type='date'></input>
+                            <input type='date' onChange={this.changeCheckOut} value={this.state.checkOut}/>
                         </div>
 
                         <div className='col s12'>
-                            <select className='browser-default'>
+                            <select className='browser-default' onChange={this.changeNumGuests} value={this.state.numberOfGuests}>
                                 <option value='1'>1 Guest</option>
                                 <option value='2'>2 Guests</option>
                                 <option value='3'>3 Guests</option>
