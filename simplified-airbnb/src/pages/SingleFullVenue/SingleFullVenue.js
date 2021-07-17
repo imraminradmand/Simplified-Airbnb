@@ -73,6 +73,19 @@ function SingleFullVenue(props) {
             const totalPrice = pricePerNight * diffDays;
             const scriptUrl = 'https://js.stripe.com/v3';
             const stripePublicKey = 'pk_test_5198HtPL5CfCPYJ3X8TTrO06ChWxotTw6Sm2el4WkYdrfN5Rh7vEuVguXyPrTezvm3ntblRX8TpjAHeMQfHkEpTA600waD2fMrT'; //should be an env var
+            //PLACING IN OWN MODULE, KEEPING HERE FOR CODE UNDERSTANDABILITY
+            // await new Promise((resolve, reject) =>{
+            //     const script = document.createElement('script')
+            //     script.type = 'text/javascript'
+            //     script.src = scriptUrl
+            //     script.onload = () => {
+            //         console.log('script loaded')
+            //         resolve()
+            //     }
+            //     document.getElementsByTagName('head')[0].appendChild(script)
+            //     //could have used a script tag wanting to try something different
+            //     console.log('Script added')
+            // })
             await loadScript(scriptUrl) 
             const stripe = window.Stripe(stripePublicKey);
             const stripeSessionUrl = `${window.apiHost}/payment/create-session`;
