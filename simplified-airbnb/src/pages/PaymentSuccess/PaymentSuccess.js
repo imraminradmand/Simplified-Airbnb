@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
 import './PaymentSuccess.css'
 library.add(faLongArrowAltRight)
 
-//this page will only render on port 3000, just how the stripe.js backend is setup for testing purposes
+//this page will only render on port 3000, just how the stripe.js backend is only setup for testing purposes
 
 function PaymentSuccess(props){
     

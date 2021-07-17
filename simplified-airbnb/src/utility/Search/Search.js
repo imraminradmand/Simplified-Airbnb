@@ -8,6 +8,7 @@ import Venues from '../Venues/Venues';
 
 function Search(props){
 
+    console.log(props.match.params.searchTerm)
     const [ activities, setActivities ] = useState([])
     const [ cities, setCities ] = useState([])
     const [ venues, setVenues ] = useState([])

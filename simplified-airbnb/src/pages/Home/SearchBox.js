@@ -11,15 +11,16 @@ function SearchBox(props) {
     const guest = useControlled('1')    
 
 
-    // const submitSearch = ()=> {
-    //     history.push(`/search/${where.value}`)
-    // }
+    const submitSearch = (e)=>{
+        e.preventDefault();
+        props.history.push(`/search/${where.value}`)
+    }
 
     return(
         <div className='home-search-box col m4'>
             <h1>Book Unique places to stay and things to do</h1>
 
-            <form className='search-box-form'>
+            <form className='search-box-form' onSubmit={submitSearch}>
                 <div className='col m12'>
                     <div className='form-label'>Where</div>
                     <div className='input-field' id='where'>
