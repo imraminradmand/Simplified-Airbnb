@@ -51,66 +51,44 @@ function SingleFullVenue(props) {
 
 
 
-    const reserveNow = async(e) => {
-        const startDay = moment(this.state.checkIn)
-        console.log(startDay)
-        const endDay = moment(this.state.checkOut)
-        console.log(endDay)
-        const diffDays = endDay.diff(startDay, 'days')
-        console.log(diffDays)
-
-        if(diffDays < 1) {
+    const reserveNow = async(e)=>{
+        const startDayMoment = moment(checkIn)
+        const endDayMoment = moment(checkOut)
+        const diffDays = endDayMoment.diff(startDayMoment,"days");
+        if(diffDays < 1){
+            
             swal({
-                title:'Invalid date',
-                text:'CheckOut date has to be after CheckIn',
-                icon:'error'
+                title: "Check out date must be after check in date",
+                icon: 'error',
             })
-        } else if (isNaN(diffDays)) {
+        }else if(isNaN(diffDays)){
+            
             swal({
-                title:'Bad date',
-                text:'Please make sure your dates are valid',
-                icon:'error'
+                title: "Please make sure your dates are valid",
+                icon: 'error',
             })
-        } else {
-            const pricePerNight = this.state.singleVenue.pricePerNight
-            const totalPrice =  pricePerNight * diffDays
-            console.log(totalPrice) 
-            const scriptUrl = 'https://js.stripe.com/v3'
-            const stripePublicKey = 'pk_test_5198HtPL5CfCPYJ3X8TTrO06ChWxotTw6Sm2el4WkYdrfN5Rh7vEuVguXyPrTezvm3ntblRX8TpjAHeMQfHkEpTA600waD2fMrT' // should be in env file
-
-            //PLACING IN OWN MODULE, KEEPING HERE FOR CODE UNDERSTANDABILITY
-            // await new Promise((resolve, reject) =>{
-            //     const script = document.createElement('script')
-            //     script.type = 'text/javascript'
-            //     script.src = scriptUrl
-            //     script.onload = () => {
-            //         console.log('script loaded')
-            //         resolve()
-            //     }
-            //     document.getElementsByTagName('head')[0].appendChild(script)
-            //     //could have used a script tag wanting to try something different
-            //     console.log('Script added')
-            // })
-            //gotta have it be an async await cause if the JS script doesnt run then line
-            //96 wont run cause nothings there, incase internet speeds drop or something
-
-            await loadScript(scriptUrl)
-            console.log('good to go with Stripe')
-            const stripe = window.Stripe(stripePublicKey)
-            const sessionUrl = `${window.apiHost}/payment/create-session`
+        }else{
+            
+            const pricePerNight = singleVenue.pricePerNight;
+            const totalPrice = pricePerNight * diffDays;
+            const scriptUrl = 'https://js.stripe.com/v3';
+            const stripePublicKey = 'pk_test_5198HtPL5CfCPYJ3X8TTrO06ChWxotTw6Sm2el4WkYdrfN5Rh7vEuVguXyPrTezvm3ntblRX8TpjAHeMQfHkEpTA600waD2fMrT'; //should be an env var
+            await loadScript(scriptUrl) 
+            const stripe = window.Stripe(stripePublicKey);
+            const stripeSessionUrl = `${window.apiHost}/payment/create-session`;
             const data = {
-                venueData: this.state.singleVenue,
+                venueData: singleVenue,
                 totalPrice,
                 diffDays,
                 pricePerNight,
-                checkIn: this.state.checkIn,
-                checkOut: this.state.checkOut,
-                token: this.props.auth.token,
-                numberOfGuests: this.state.numberOfGuests,
-                currency: 'USD'
+                checkIn: checkIn,
+                checkOut: checkOut,
+                token: token,
+                numberOfGuests: numGuests,
+                currency: 'USD',
             }
-
-            const sessionVar = await axios.post(sessionUrl,data);
+            
+            const sessionVar = await axios.post(stripeSessionUrl,data);
             // console.log(sessionVar.data);
             stripe.redirectToCheckout({
                 sessionId: sessionVar.data.id,
@@ -118,9 +96,9 @@ function SingleFullVenue(props) {
                 console.log(result);
                 //if the network fails, this will run
             })
-
         }
     }
+
 
 
         const sv = singleVenue

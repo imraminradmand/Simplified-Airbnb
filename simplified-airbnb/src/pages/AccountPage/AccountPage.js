@@ -50,7 +50,7 @@ function AccountPage(props){
             <div className="row">
                 <div className="col s8 offset-s3">
                     <Route exact path="/account" render={()=>
-                        <h1>Choose what you'd like to do from the left!</h1>
+                        <h3 style={{paddingLeft:'2rem'}}>Choose an option from the left!</h3>
                     } />
                     <Route exact path="/account/reservations/confirmed" render={()=>
                         <Bookings type="upcoming" bookings={upcomingBookings} token={token} />
